@@ -32,6 +32,11 @@
 	
 	require_once("models/article_model.php"); // le fichier model des articles
 	$objModelArticle	= new ArticleModel(); // instancier
+	// Donner à la classe ArticleModel les infos de recherche
+	$objModelArticle->strKeywords	= $_POST['keywords']??"";
+	$objModelArticle->intAuthor		= $_POST['author']??0;
+	
+	
 	$arrArticles		= $objModelArticle->findAll(); // Récupérer les articles
 	
 ?>	
