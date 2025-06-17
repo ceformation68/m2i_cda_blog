@@ -8,8 +8,6 @@
 	
 	include("_partial/header.php");
 	
-	//var_dump($_POST);
-	
 	$strKeywords	= $_POST['keywords']??"";
 	$intPeriod		= $_POST['period']??0;
 	$strDate		= $_POST['date']??"";
@@ -17,27 +15,17 @@
 	$strEndDate		= $_POST['enddate']??"";
 	$intAuthor		= $_POST['author']??0;
 	
-	// Inclure le fichier de connexion PDO
-	/*require("connexion.php");
-	
-	// Ecrire la requête comme dans PHPMyAdmin
-	$strQuery		= "SELECT article_title, article_img, article_content, article_createdate,
-							CONCAT(user_name, ' ', user_firstname) AS article_author
-						FROM articles
-							INNER JOIN users ON article_creator = user_id
-						ORDER BY article_createdate DESC 
-						";
-	// On execute la requête et on demande tous les résultats
-	$arrArticles	= $db->query($strQuery)->fetchAll();*/
-	
 	require_once("models/article_model.php"); // le fichier model des articles
 	$objModelArticle	= new ArticleModel(); // instancier
 	// Donner à la classe ArticleModel les infos de recherche
-	$objModelArticle->strKeywords	= $_POST['keywords']??"";
-	$objModelArticle->intAuthor		= $_POST['author']??0;
-	
-	
-	$arrArticles		= $objModelArticle->findAll(); // Récupérer les articles
+	$objModelArticle->strKeywords	= $strKeywords;
+	$objModelArticle->intPeriod		= $intPeriod;
+	$objModelArticle->strDate		= $strDate;
+	$objModelArticle->strStartDate	= $strStartDate;
+	$objModelArticle->strEndDate	= $strEndDate;
+	$objModelArticle->intAuthor		= $intAuthor;
+	// Récupération des articles
+	$arrArticles		= $objModelArticle->findAll(); 
 	
 ?>	
 <div class="row mb-2">
