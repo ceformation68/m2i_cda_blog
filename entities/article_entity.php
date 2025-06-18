@@ -1,6 +1,7 @@
 <?php
+require_once("entities/mother_entity.php");
 
-class Article {
+class Article extends Entity{
 	// Attributs
 	private int $_id;
 	private string $_title;
@@ -10,20 +11,8 @@ class Article {
 	private int $_creator;
 	private string $_author;
 	
-	/** 
-	* Fonction qui permet de d'hydrater l'objet de manière "automatique"
-	* @param array $arrData Tableau des données à hydrater
-	*/
-	public function hydrate(array $arrData){
-		foreach($arrData as $key => $value){
-			$strSetter = "set".ucfirst(str_replace('article_', '', $key));
-			
-			if (method_exists($this, $strSetter)){
-				$this->$strSetter($value);
-			}
-		}
-		/*$this->setTitle($arrData['article_title']);
-		$this->setImg($arrData['article_img']);*/
+	public function __construct(){
+		$this->_prefixe = "article";
 	}
 	
 	// Getters et Setters
