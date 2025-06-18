@@ -63,12 +63,11 @@
 	</form>
 
 <?php
+		require("entities/article_entity.php");
 		// Parcourir le tableau des articles
 		foreach($arrArticles as $arrDetArticle){
-			// Traitement avant affichage
-			$objDate 	= new DateTimeImmutable($arrDetArticle['article_createdate']);
-			$strDate 	= $objDate->format('d/m/Y');
-			$strSummary	= substr($arrDetArticle['article_content'], 0, 50).'...';
+			$objArticle	= new Article();
+			$objArticle->hydrate($arrDetArticle);
 			// Affichage d'un article
 			include("_partial/article.php");
 		}

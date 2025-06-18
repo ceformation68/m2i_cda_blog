@@ -24,7 +24,8 @@ class ArticleModel extends Connexion{
 	public function findAll(int $intLimit=0){
 
 		// Ecrire la requête comme dans PHPMyAdmin
-		$strQuery		= "SELECT article_title, article_img, article_content, article_createdate,
+		$strQuery		= "SELECT article_id, article_title, article_img, article_content, 
+							article_createdate, article_creator, 
 							CONCAT(user_name, ' ', user_firstname) AS article_author
 							FROM articles
 								INNER JOIN users ON article_creator = user_id";
@@ -77,6 +78,8 @@ class ArticleModel extends Connexion{
 		// On execute la requête et on demande tous les résultats
 		$arrArticles	= $this->_db->query($strQuery)->fetchAll();		
 		
+		/* Possibilité de 'relier' l'entité article 
+			et d'hydrater directement pour renvoyer un tableau d'objets */
 		return $arrArticles;
 	}
 	
