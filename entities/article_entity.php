@@ -3,7 +3,6 @@ require_once("entities/mother_entity.php");
 
 class Article extends Entity{
 	// Attributs
-	private int $_id;
 	private string $_title;
 	private string $_img;
 	private string $_content;
@@ -16,12 +15,6 @@ class Article extends Entity{
 	}
 	
 	// Getters et Setters
-	public function getId():int{
-		return $this->_id;
-	}
-	public function setId(int $intId){
-		$this->_id = $intId;
-	}
 	public function getTitle():string{
 		return $this->_title;
 	}

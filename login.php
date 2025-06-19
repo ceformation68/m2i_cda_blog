@@ -31,22 +31,9 @@
 		// Si le formulaires est OK
 		if (count($arrErrors) == 0){
 			// Vérifier les infos en BDD
-			
-			// Inclure le fichier de connexion PDO
-			require("connexion.php");
-			$strQuery	= "SELECT user_firstname, user_name, user_pwd, user_id
-							FROM users 
-							WHERE user_mail = :mail;";
-			// La requête est préparée
-			$strRqPrep	= $db->prepare($strQuery);
-			
-			// La définition de la valeur du paramètre et de son type
-			$strRqPrep->bindValue(":mail", $strMail, PDO::PARAM_STR);
-
-			// On execute la requête et on demande le résultat
-			$strRqPrep->execute();
-			//var_dump($strRqPrep->debugDumpParams());
-			$arrUser	= $strRqPrep->fetch();
+			require("models/user_model.php");
+			$objUserModel 	= new UserModel();
+			$arrUser 		= $objUserModel->findUserByMail($strMail, false);
 			
 			// Si aucun utilisateur trouvé
 			if($arrUser === false){
@@ -54,10 +41,16 @@
 			}else{
 				// On vérifie le mot de passe
 				if (password_verify($strPwd, $arrUser['user_pwd'])) {
+					// Créer l'utilisateur
+					require("entities/user_entity.php");
+					$objUser = new User;
+					unset($arrUser['user_pwd']); // enlever mdp pour l'hydratation
+					$objUser->hydrate($arrUser);
+
 					// Ajouter les informations de l'utilisateur => en session
-					$_SESSION['prenom'] = $arrUser['user_firstname'];
-					$_SESSION['id'] 	= $arrUser['user_id']; // La clé peut être renommée
-					$_SESSION['nom'] 	= $arrUser['user_name'];
+					$_SESSION['prenom'] = $objUser->getFirstname();
+					$_SESSION['id'] 	= $objUser->getId(); // La clé peut être renommée
+					$_SESSION['nom'] 	= $objUser->getName();
 					$_SESSION['message']= "Vous êtes bien connecté";
 					// Redirection vers la page d'accueil
 					header("Location:index.php");

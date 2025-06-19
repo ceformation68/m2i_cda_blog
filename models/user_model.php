@@ -10,10 +10,14 @@ require("models/connexion.php");
 
 class UserModel extends Connexion{
 
-	public function findUserByMail(string $strMail):array|bool{
-		$strQuery	= "SELECT user_mail
-						FROM users 
-						WHERE user_mail = :mail;";
+	public function findUserByMail(string $strMail, bool $boolMail = true):array|bool{
+		if ($boolMail){
+			$strQuery	= "SELECT user_mail";
+		}else{
+			$strQuery	= "SELECT user_firstname, user_name, user_pwd, user_id";
+		}
+		$strQuery	.= "	FROM users 
+							WHERE user_mail = :mail;";
 		$strRqPrep	= $this->_db->prepare($strQuery);	
 		$strRqPrep->bindValue(":mail", $strMail, PDO::PARAM_STR);
 		$strRqPrep->execute();

@@ -3,6 +3,8 @@
 class Entity {
 	
 	protected string $_prefixe;
+
+	private int $_id;
 	
 	/** 
 	* Fonction qui permet de d'hydrater l'objet de manière "automatique"
@@ -20,7 +22,12 @@ class Entity {
 		$this->setImg($arrData['article_img']);*/
 	}	
 	
-	
+	public function getId():int{
+		return $this->_id;
+	}
+	public function setId(int $intId){
+		$this->_id = $intId;
+	}	
 	
 	
 }

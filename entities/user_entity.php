@@ -3,7 +3,6 @@ require_once("entities/mother_entity.php");
 
 class User extends Entity{
 	// Attributs
-	private int $_id;
 	private string $_name="";
 	private string $_firstname="";
 	private string $_mail="";
