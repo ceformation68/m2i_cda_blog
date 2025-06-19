@@ -84,4 +84,12 @@ class ArticleModel extends Connexion{
 	}
 	
 	
+	public function insert(object $objArticle){
+		
+		// Ajouter les infos en BDD
+		$strQuery	= "INSERT INTO articles (article_title, article_img, 		article_content, article_createdate, article_creator)
+						VALUES ('".$objArticle->getTitle()."', '".$objArticle->getImg()."', '".$objArticle->getContent()."', NOW(), ".$_SESSION['id'].");";
+								
+		$this->_db->exec($strQuery);		
+	}
 }

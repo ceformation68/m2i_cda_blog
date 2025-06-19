@@ -3,9 +3,9 @@ require_once("entities/mother_entity.php");
 
 class Article extends Entity{
 	// Attributs
-	private string $_title;
+	private string $_title="";
 	private string $_img;
-	private string $_content;
+	private string $_content="";
 	private string $_createdate;
 	private int $_creator;
 	private string $_author;
@@ -19,6 +19,9 @@ class Article extends Entity{
 		return $this->_title;
 	}
 	public function setTitle(string $strTitle){
+		$strTitle	= str_replace("<script>", "", $strTitle);
+		$strTitle	= str_replace("</script>", "", $strTitle);
+		$strTitle	= htmlspecialchars(trim($strTitle));
 		$this->_title = $strTitle;
 	}
 	public function getImg():string{
@@ -27,6 +30,20 @@ class Article extends Entity{
 	public function setImg(string $strImg){
 		$this->_img = $strImg;
 	}
+	public function setNewImg(string $strImg){
+		// Récupérer l'extension du fichier
+		$arrFileName 	= explode(".", $strImg);
+		// L'extension est le dernier élément du tableau
+		/*$strExtension	= $arrFileName[count($arrFileName)-1];*/
+		$strExtension	= end($arrFileName);
+
+		// Génération d'un nom de fichier avec date + aléatoire
+		$objDate 		= new DateTimeImmutable();
+		$strImageName	= $objDate->format('YmdHis').bin2hex(random_bytes(5)).".".$strExtension;
+
+		$this->_img = $strImageName;
+	}
+	
 	public function getContent():string{
 		return $this->_content;
 	}
@@ -35,6 +52,7 @@ class Article extends Entity{
 		return $strSummary;
 	}
 	public function setContent(string $strContent){
+		$strContent		= htmlspecialchars(trim($strContent));
 		$this->_content = $strContent;
 	}
 	public function getCreatedate():string{
