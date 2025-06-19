@@ -83,6 +83,17 @@ class ArticleModel extends Connexion{
 		return $arrArticles;
 	}
 	
+	public function findById(int $intId){
+		$strQuery	= "SELECT article_id, article_title, article_img, article_content
+					FROM articles 
+					WHERE article_id = :id;";
+		$strRqPrep	= $this->_db->prepare($strQuery);	
+		$strRqPrep->bindValue(":id", $intId, PDO::PARAM_INT);
+		$strRqPrep->execute();
+		$arrArticle	= $strRqPrep->fetch();
+		
+		return $arrArticle;
+	}
 	
 	public function insert(object $objArticle){
 		
@@ -91,5 +102,29 @@ class ArticleModel extends Connexion{
 						VALUES ('".$objArticle->getTitle()."', '".$objArticle->getImg()."', '".$objArticle->getContent()."', NOW(), ".$_SESSION['id'].");";
 								
 		$this->_db->exec($strQuery);		
+	}
+	
+	public function update(object $objArticle){
+		// Modifier les infos en BDD
+		$strQuery		= "UPDATE articles 
+							SET article_title = :title,
+								article_img = :image,
+								article_content = :content";
+		$strQuery	.=	" WHERE article_id = :id; ";
+		$strRqPrep	= $this->_db->prepare($strQuery);	
+		$strRqPrep->bindValue(":title", $objArticle->getTitle(), PDO::PARAM_STR);
+		$strRqPrep->bindValue(":image", $objArticle->getImg(), PDO::PARAM_STR);
+		$strRqPrep->bindValue(":content", $objArticle->getContent(), PDO::PARAM_STR);
+		$strRqPrep->bindValue(":id", $objArticle->getId(), PDO::PARAM_INT);
+			
+		$strRqPrep->execute();			
+	}
+	
+	public function delete(int $intId){
+		// Supprimer les infos en BDD
+		$strQuery	= "DELETE FROM articles 
+						WHERE article_id = ".$intId;
+								
+		$this->_db->exec($strQuery);	
 	}
 }

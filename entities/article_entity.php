@@ -21,7 +21,7 @@ class Article extends Entity{
 	public function setTitle(string $strTitle){
 		$strTitle	= str_replace("<script>", "", $strTitle);
 		$strTitle	= str_replace("</script>", "", $strTitle);
-		$strTitle	= htmlspecialchars(trim($strTitle));
+		$strTitle	= trim($strTitle);
 		$this->_title = $strTitle;
 	}
 	public function getImg():string{
