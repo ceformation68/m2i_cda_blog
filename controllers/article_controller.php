@@ -83,6 +83,7 @@
 			if (!isset($_SESSION['id']) || $_SESSION['id'] == '') {
 				// Si l'utilisateur n'est pas connecté => page 403
 				header("Location:index.php?ctrl=error&action=error_403");
+				die;
 			}
 
 			// Tableau des types MIME autorisés
@@ -136,6 +137,7 @@
 						$_SESSION['message']= "L'article a bien été ajouté";
 						// Redirection vers la page d'accueil
 						header("Location:index.php");
+						die;
 					}
 				}		
 			}			
@@ -160,6 +162,7 @@
 			if (!isset($_SESSION['id']) || $_SESSION['id'] == '') {
 				// Si l'utilisateur n'est pas connecté => page 403
 				header("Location:index.php?ctrl=error&action=error_403");
+				die;
 			}
 
 			// Récupère l'article en fonction de son identifiant
@@ -223,6 +226,7 @@
 						$_SESSION['message']= "L'article a bien été modifié";
 						// Redirection vers la page d'accueil
 						header("Location:index.php");
+						die;
 					}			
 					
 				}		
@@ -241,6 +245,7 @@
 			if (!isset($_SESSION['id']) || $_SESSION['id'] == '') {
 				// Si l'utilisateur n'est pas connecté => page 403
 				header("Location:index.php?ctrl=error&action=error_403");
+				die;
 			}
 			
 			$this->_objArticleModel->delete($_GET['id']);	
@@ -248,6 +253,7 @@
 			$_SESSION['message']= "L'article a bien été supprimé";
 			// Redirection vers la page d'accueil
 			header("Location:index.php");
+			die;
 		}
 		
 		

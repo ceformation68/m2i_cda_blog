@@ -14,4 +14,4 @@
 	</p>
 </form>
 
-<a href="forgot_pwd.php">Mot de passe oublié</a>
+<a href="index.php?ctrl=user&action=forgot_pwd">Mot de passe oublié</a>

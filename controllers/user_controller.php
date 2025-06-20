@@ -80,6 +80,7 @@
 					$_SESSION['message']= "Vous compte à bien été créé, vous pouvez vous connecter";
 					// Redirection vers la page d'accueil
 					header("Location:index.php?ctrl=user&action=login");
+					die;
 				}		
 			}			
 			
@@ -140,6 +141,7 @@
 							$_SESSION['message']= "Vous êtes bien connecté";
 							// Redirection vers la page d'accueil
 							header("Location:index.php");
+							die;
 						}else{
 							$arrErrors[] = "Erreur dans la connexion";
 						}
@@ -160,6 +162,7 @@
 			session_destroy();
 			// Redirection vers la page d'accueil
 			header("Location:index.php");
+			die;
 		}
 
 		public function edit_account(){
@@ -175,6 +178,7 @@
 			if (!isset($_SESSION['id']) || $_SESSION['id'] == '') {
 				// Si l'utilisateur n'est pas connecté => page 403
 				header("Location:index.php?ctrl=error&action=error_403");
+				die;
 			}
 			
 			// Récupérer les informations de l'utilisateur connecté
@@ -230,6 +234,7 @@
 					$_SESSION['message']= "Vos informations ont bien été modifiées";
 					// Redirection vers la page d'accueil
 					header("Location:index.php");
+					die;
 				}		
 			}else{
 				$this->_objUser->hydrate($arrUser);
@@ -254,17 +259,8 @@
 			$strConfirm_pwd	= $_POST['confirm_pwd']??"";
 			
 			// Récupère les utilisateurs en fonction du code
-			/*
-			require("connexion.php");
-			$strQuery	= "SELECT user_mail, user_id, user_name
-							FROM users 
-							WHERE user_code = :code
-								AND DATE_ADD(user_code_date, INTERVAL 15 MINUTE) > NOW();";
-			$strRqPrep	= $db->prepare($strQuery);	
-			$strRqPrep->bindValue(":code", $strCode, PDO::PARAM_STR);
-			$strRqPrep->execute();
-			$arrUser	= $strRqPrep->fetch();
-			*/
+			$arrUser	= $this->_objUserModel->findUserByCode($strCode);
+
 			// initialise le tableau des erreurs
 			$arrErrors	= array(); 
 			if($arrUser === false){
@@ -281,28 +277,20 @@
 					
 					// Si le formulaires est OK
 					if (count($arrErrors) == 0){
-						// Inclure le fichier de connexion PDO
-						require("connexion.php");
-						
-						// Hacher le mot de passe
-						$strPwdHash = password_hash($strPwd, PASSWORD_DEFAULT);
-						
-						// Modifier les infos en BDD
-						$strQuery		= "UPDATE users 
-											SET user_pwd = :pwd
-											WHERE user_id = :id;";
-											// Possibilité de remettre à null user_code et user_code_date dans la requête
-						$strRqPrep	= $db->prepare($strQuery);	
-						$strRqPrep->bindValue(":pwd", $strPwdHash, PDO::PARAM_STR);
-						$strRqPrep->bindValue(":id", $arrUser['user_id'], PDO::PARAM_INT);
-						$strRqPrep->execute();
+						$this->_objUser->setId($arrUser['user_id']);
+						$this->_objUser->setPwd($strPwd);
+						// Mise à jour du mot de passe de l'utilisateur
+						$this->_objUserModel->updatePwd($this->_objUser);
 						
 						$_SESSION['message']= "Votre mot de passe a bien été modifié, vous pouvez vous connecter";
 						// Redirection vers la page de connexion
-						header("Location:login.php");
+						header("Location:index.php?ctrl=user&action=login");
+						die;
 					}	
 				}
 			}			
+			$this->_arrData['arrErrors']	= $arrErrors;
+			
 			// Affichage
 			$this->_display('recover_pwd');
 		}
@@ -331,26 +319,11 @@
 					// Mail ok
 					// Récupère les utilisateurs qui ont l'adresse Mail
 					$arrUser	= $this->_objUserModel->findUserByMail($strMail, false);
-					/*require("connexion.php");
-					$strQuery	= "SELECT user_mail, user_id, user_name
-									FROM users 
-									WHERE user_mail = :mail;";
-					$strRqPrep	= $db->prepare($strQuery);	
-					$strRqPrep->bindValue(":mail", $strMail, PDO::PARAM_STR);
-					$strRqPrep->execute();
-					$arrUser	= $strRqPrep->fetch();*/
 					// Si j'ai un résultat => envoyer un mail 
 					if($arrUser !== false){
 						$strCode = bin2hex(random_bytes(20));
 						// Mise à jour de l'utilisateur (code + date/heure de demande de réinitialisation)
-						$strQuery	= "UPDATE users
-										SET user_code = :code,
-											user_code_date = NOW()
-										WHERE user_id = :id;";
-						$strRqPrep	= $db->prepare($strQuery);
-						$strRqPrep->bindValue(":code", $strCode, PDO::PARAM_STR);
-						$strRqPrep->bindValue(":id", $arrUser['user_id'], PDO::PARAM_INT);
-						$strRqPrep->execute();
+						$this->_objUserModel->majUserCode($strCode, $arrUser['user_id']);
 						// Envoyer le mail
 						$mail = new PHPMailer();
 						$mail->IsSMTP();
@@ -369,7 +342,7 @@
 						$mail->addAddress($strMail, $arrUser['user_name']);
 						$mail->Subject		= 'BLOG - Réinitialisation du mot de passe';
 						
-						$strLien			= "recover_pwd.php?code=".$strCode;
+						$strLien			= "index.php?ctrl_user&action=recover_pwd&code=".$strCode;
 						
 						$mail->Body 		= "<p>Bonjour ".$arrUser['user_name'].",</p>
 												<p>Vous avez demandé la réinitialisation du mot de passe</p>
@@ -385,13 +358,16 @@
 					if (count($arrErrors) == 0){
 						$_SESSION['message'] = "Votre demande de réinitialisation a été traitée, 
 												si vous êtes inscrit vous allez recevoir un mail avec un lien";	
-						header("Location:login.php");
+						header("Location:index.php?ctrl=user&action=login");
+						die;
 					}
 				}
 			}	
 
+			$this->_arrData['strMail']		= $strMail;
+			$this->_arrData['arrErrors']	= $arrErrors;
 			// Affichage
-			$this->_display('recover_pwd');
+			$this->_display('forgot_pwd');
 			
 		}
 

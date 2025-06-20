@@ -71,4 +71,41 @@ class UserModel extends Connexion{
 		
 	}
 	
+	public function majUsercode(string $strCode, int $intId){
+		$strQuery	= "UPDATE users
+				SET user_code = :code,
+					user_code_date = NOW()
+				WHERE user_id = :id;";
+		$strRqPrep	= $this->_db->prepare($strQuery);
+		$strRqPrep->bindValue(":code", $strCode, PDO::PARAM_STR);
+		$strRqPrep->bindValue(":id", $intId, PDO::PARAM_INT);
+		$strRqPrep->execute();
+	}
+
+	public function findUserByCode(string $strCode){
+		$strQuery	= "SELECT user_mail, user_id, user_name
+						FROM users 
+						WHERE user_code = :code
+							AND DATE_ADD(user_code_date, INTERVAL 15 MINUTE) > NOW();";
+		$strRqPrep	= $this->_db->prepare($strQuery);	
+		$strRqPrep->bindValue(":code", $strCode, PDO::PARAM_STR);
+		$strRqPrep->execute();
+		$arrUser	= $strRqPrep->fetch();
+
+		return $arrUser;
+	}
+	
+	public function updatePwd(object $objUser){
+		// Modifier les infos en BDD
+		$strQuery		= "UPDATE users 
+							SET user_pwd = :pwd
+							WHERE user_id = :id;";
+							// Possibilité de remettre à null user_code et user_code_date dans la requête
+		$strRqPrep	= $this->_db->prepare($strQuery);	
+		$strRqPrep->bindValue(":pwd", $objUser->getPwdHash(), PDO::PARAM_STR);
+		$strRqPrep->bindValue(":id", $objUser->getId(), PDO::PARAM_INT);
+		$strRqPrep->execute();
+		
+	}
+
 }
