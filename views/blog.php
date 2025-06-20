@@ -33,11 +33,8 @@
 	</form>
 
 <?php
-		require("entities/article_entity.php");
 		// Parcourir le tableau des articles
-		foreach($arrArticles as $arrDetArticle){
-			$objArticle	= new Article();
-			$objArticle->hydrate($arrDetArticle);
+		foreach($arrArticles as $objArticle){
 			// Affichage d'un article
 			include("_partial/article.php");
 		}
