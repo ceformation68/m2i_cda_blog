@@ -1,33 +1,3 @@
-<?php
-	// Variables d'affichage
-	$strH1		= "Blog";
-	$strPar		= "Page affichant tous les articles, avec une zone de recherche sur les articles";
-	
-	// Variables de fonctionnement
-	$strPage 	= "blog";
-	
-	include("_partial/header.php");
-	
-	$strKeywords	= $_POST['keywords']??"";
-	$intPeriod		= $_POST['period']??0;
-	$strDate		= $_POST['date']??"";
-	$strStartDate	= $_POST['startdate']??"";
-	$strEndDate		= $_POST['enddate']??"";
-	$intAuthor		= $_POST['author']??0;
-	
-	require_once("models/article_model.php"); // le fichier model des articles
-	$objModelArticle	= new ArticleModel(); // instancier
-	// Donner à la classe ArticleModel les infos de recherche
-	$objModelArticle->strKeywords	= $strKeywords;
-	$objModelArticle->intPeriod		= $intPeriod;
-	$objModelArticle->strDate		= $strDate;
-	$objModelArticle->strStartDate	= $strStartDate;
-	$objModelArticle->strEndDate	= $strEndDate;
-	$objModelArticle->intAuthor		= $intAuthor;
-	// Récupération des articles
-	$arrArticles		= $objModelArticle->findAll(); 
-	
-?>	
 <div class="row mb-2">
 	<form name="formSearch" method="post" action="#">
 		<fieldset>
@@ -73,6 +43,3 @@
 		}
 	?>			
 </div>
-<?php
-	include("_partial/footer.php");
-?>

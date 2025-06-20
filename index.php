@@ -1,8 +1,11 @@
 <?php
+	session_start();
 
 	// Récupérer les infos dans l'url
 	$strController 	= $_GET['ctrl']??"article";
 	$strAction		= $_GET['action']??"home";
+	
+	require_once("controllers/mother_controller.php");
 	
 	require_once("controllers/".$strController."_controller.php");
 	$strCtrlName	= ucfirst($strController)."Ctrl";

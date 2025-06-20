@@ -1,8 +1,3 @@
-<?php
-	session_start();
-	//var_dump($_SESSION);
-?>
-
 <!doctype html>
 <html lang="fr" data-bs-theme="auto">
 	<head>
@@ -43,19 +38,19 @@
 						<?php
 							if (isset($_SESSION['prenom']) && $_SESSION['prenom'] != '') {
 						?>
-						<a class="btn btn-sm" href="edit_account.php" title="Mon compte">
+						<a class="btn btn-sm" href="index.php?ctrl=user&action=edit_account" title="Mon compte">
 							Bonjour <?php echo($_SESSION['prenom']); ?>
 						</a>
 						| 
-						<a class="btn btn-sm" href="logout.php" title="Se déconnecter">
+						<a class="btn btn-sm" href="index.php?ctrl=user&action=logout" title="Se déconnecter">
 							<i class="fas fa-sign-out-alt"></i>
 						</a> 
 						<?php } else { ?>
-						<a class="btn btn-sm" href="create_account.php" title="Créer un compte">
+						<a class="btn btn-sm" href="index.php?ctrl=user&action=create_account" title="Créer un compte">
 							<i class="fas fa-user"></i>
 						</a>
 						| 
-						<a class="btn btn-sm" href="login.php" title="Se connecter">
+						<a class="btn btn-sm" href="index.php?ctrl=user&action=login" title="Se connecter">
 							<i class="fas fa-sign-in-alt"></i>
 						</a>
 						<?php } ?>						
@@ -86,5 +81,15 @@
 				echo "</div>";
 				// On supprime le message après l'avoir affiché
 				unset($_SESSION['message']);
+			}
+		?>
+		<?php
+			/* Affichage des erreurs */
+			if (isset($arrErrors) && count($arrErrors) > 0){
+				echo "<div class='alert alert-danger'>";
+				foreach ($arrErrors as $strError){
+					echo "<p class='mb-0'>".$strError."</p>";
+				}
+				echo "</div>";
 			}
 		?>
