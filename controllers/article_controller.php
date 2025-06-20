@@ -82,7 +82,7 @@
 			// Vérifier que l'utilisateur est connecté
 			if (!isset($_SESSION['id']) || $_SESSION['id'] == '') {
 				// Si l'utilisateur n'est pas connecté => page 403
-				header("Location:error_403.php");
+				header("Location:index.php?ctrl=error&action=error_403");
 			}
 
 			// Tableau des types MIME autorisés
@@ -159,7 +159,7 @@
 			// Vérifier que l'utilisateur est connecté
 			if (!isset($_SESSION['id']) || $_SESSION['id'] == '') {
 				// Si l'utilisateur n'est pas connecté => page 403
-				header("Location:error_403.php");
+				header("Location:index.php?ctrl=error&action=error_403");
 			}
 
 			// Récupère l'article en fonction de son identifiant
@@ -240,7 +240,7 @@
 			// Vérifier que l'utilisateur est connecté
 			if (!isset($_SESSION['id']) || $_SESSION['id'] == '') {
 				// Si l'utilisateur n'est pas connecté => page 403
-				header("Location:error_403.php");
+				header("Location:index.php?ctrl=error&action=error_403");
 			}
 			
 			$this->_objArticleModel->delete($_GET['id']);	

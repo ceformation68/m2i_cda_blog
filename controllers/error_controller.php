@@ -15,5 +15,17 @@
 			
 		}
 		
+		public function error_404(){
+			// Variables d'affichage
+			$this->_arrData['strH1']	= "La page n'existe pas";
+			$this->_arrData['strPar']	= "Page d'erreur";
+			
+			// Variables de fonctionnement
+			$this->_arrData['strPage'] 	= "error_404";
+			
+			// Affichage
+			$this->_display('error_404');
+			
+		}
 		
 	}

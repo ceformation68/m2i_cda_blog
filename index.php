@@ -7,10 +7,31 @@
 	
 	require_once("controllers/mother_controller.php");
 	
-	require_once("controllers/".$strController."_controller.php");
-	$strCtrlName	= ucfirst($strController)."Ctrl";
-	$objCtrl 		= new $strCtrlName();
-	$objCtrl->$strAction();
+	$boolError	= false;
 	
-	/* TODO : Vérifier l'existance du fichier, de la classe et de la méthode
-	=> Sinon redirection 404 */
+	$strCtrlFile = "controllers/".$strController."_controller.php";
+	if (file_exists($strCtrlFile)){ // Vérifier la présence du fichier
+		require_once($strCtrlFile);
+		$strCtrlName	= ucfirst($strController)."Ctrl";
+		if (class_exists($strCtrlName)){ // Vérifier le nom de la classe
+			$objCtrl 	= new $strCtrlName();
+			if (method_exists($objCtrl, $strAction)){ // Vérifier la présence de la méthode dans la classe
+				$objCtrl->$strAction();
+			}else{
+				// Si la page n'existe pas
+				$boolError = true;
+			}
+		}else{
+			// Si la page n'existe pas
+			$boolError = true;
+		}
+	}else{
+		// Si la page n'existe pas
+		$boolError = true;
+	}
+	
+	if ($boolError){
+		// Si la page n'existe pas
+		header("Location:index.php?ctrl=error&action=error_404");
+	}
+	

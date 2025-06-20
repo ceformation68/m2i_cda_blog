@@ -79,7 +79,7 @@
 					
 					$_SESSION['message']= "Vous compte à bien été créé, vous pouvez vous connecter";
 					// Redirection vers la page d'accueil
-					header("Location:login.php");
+					header("Location:index.php?ctrl=user&action=login");
 				}		
 			}			
 			
