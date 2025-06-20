@@ -65,7 +65,7 @@
 
 			<div class="nav-scroller py-1 mb-3 border-bottom">
 				<?php
-					include("_partial/nav.php");
+					include("views/_partial/nav.php");
 				?>
 			</div>
 		</div>
